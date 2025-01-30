@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Sharing</title>
+
+    <style>
+        body {
+            background: linear-gradient(to right, #545454, black);
+            font-family: sans-serif;
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            margin-bottom: 50px;
+            font-size: 3.5em;
+        }
+
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin: 50px auto;
+        }
+
+        .file-name {
+            color: #888;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .custom-file-button {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            color: black;
+        }
+
+        button {
+            font-size: 25px;
+            font-weight: bold;
+            padding: 25px 50px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 12.5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: gainsboro;
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+<body>
+<h1>share files.</h1>
+<div class="file-upload">
+    <label for="fileInput" class="custom-file-button">Choose File</label>
+    <span class="file-name">no file selected</span>
+    <input type="file" id="fileInput">
+</div>
+<button onclick="uploadFile()">send</button>
+<div id="status"></div>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const fileName = this.files[0] ? this.files[0].name : 'no file selected';
+        document.querySelector('.file-name').textContent = fileName;
+    });
+
+    async function uploadFile() {
+        const fileInput = document.getElementById('fileInput')
+        const file = fileInput.files[0]
+
+        if (!file) {
+            alert('Please select a file')
+            return
+        }
+
+        const formData = new FormData()
+        formData.append('file', file)
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            document.getElementById('status').textContent = 'file sent!'
+        } catch (error) {
+            document.getElementById('status').textContent = 'error sending file.'
+        }
+    }
+</script>
+
+</body>
+</html>

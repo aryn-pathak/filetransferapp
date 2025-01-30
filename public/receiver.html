@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<style>
+    body {
+        background: linear-gradient(to right, black, #545454);
+        font-family: sans-serif;
+        color: white;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 500px;
+        font-size: 3.5em;
+    }
+</style>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>download shared files</title>
+
+</head>
+<body>
+<h1>download shared files</h1>
+<h3>leave this page open, files you share will automatically be downloaded :)</h3>
+<script>
+    const downloadedFiles = new Set();
+
+    setInterval(async () => {
+        const response = await fetch('/files');
+        const files = await response.json();
+
+        const newFiles = files.filter(file => !downloadedFiles.has(file));
+
+        if (newFiles.length > 0) {
+
+            newFiles.forEach(file => {
+                const downloadUrl = `/download/${file}`;
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = file;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                downloadedFiles.add(file);
+            });
+        }
+    }, 5000);
+</script>
+</body>
+</html>
